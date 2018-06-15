@@ -1,0 +1,63 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+syntax = "proto2";
+
+package github.struts2.protobuf;
+
+option java_package="com.github.struts2.protobuf.protocol";
+option java_multiple_files = true;
+option optimize_for = SPEED;
+
+enum EStatus {
+  SUCCEED = 1;
+  FAILED = 2;
+}
+
+message ExceptionMessage {
+  optional string message = 2;
+  repeated string stack_trace = 5;
+}
+
+message FieldError {
+  required string name = 1;
+  repeated string messages = 2;
+}
+
+message ResponseError {
+  // for action errors
+  repeated string action_errors = 10;
+  // for validation errors
+  repeated FieldError field_errors = 20;
+  // for exceptions
+  optional ExceptionMessage exception = 30;
+}
+
+message WireRequest {
+  optional int64 correlation_id = 1;
+  optional string payload_type = 5;
+  optional bytes payload = 10;
+}
+
+message WireResponse {
+  optional int64 correlation_id = 1;
+  required EStatus status = 3;
+  optional ResponseError error = 5;
+  optional string payload_type = 10; 
+  optional bytes payload = 11;
+}
