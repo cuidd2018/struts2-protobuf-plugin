@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +16,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
--->
-<Configuration>
-    <Appenders>
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
-        <Logger name="com.junahan.struts2.protobuf" level="debug"/>
-    </Loggers>
-</Configuration>
+package com.junahan.struts2.protobuf.utils;
+
+/**
+ * TODO - add document
+ * 
+ * @author Junahan - junahan@outlook.com 2018
+ * @since 1.0.0
+ */
+public interface MessageConsts {
+
+  /**
+   * code for "succeed". 
+   */
+  String SUCCEED = "succeed";
+
+  /**
+   * code for "error".
+   */
+  String ERROR = "error";
+  
+  /**
+   * The code for unsupported media type message.
+   */
+  String UNSUPPORTED_MEDIA_TYPE = "unsupported.media.type";
+  
+  /**
+   * Mime type of Protobuf message
+   */
+  String MIME_PROTOBUF = "application/x-protobuffer";
+  
+  /**
+   * Mime type of JSON
+   */
+  String MIME_JSON = "application/json";
+  
+  /**
+   * Charset of UTF_8.
+   */
+  String UTF_8 = "UTF-8";
+
+}

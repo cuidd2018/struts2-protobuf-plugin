@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
--->
-<Configuration>
-    <Appenders>
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
-        <Logger name="com.junahan.struts2.protobuf" level="debug"/>
-    </Loggers>
-</Configuration>
+package com.junahan.struts2.protobuf.test.bean;
+
+public class BazBean {
+	private int misc;
+
+	public int getMisc() {
+		return misc;
+	}
+
+	public void setMisc(int misc) {
+		this.misc = misc;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + misc;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof BazBean)) {
+			return false;
+		}
+		BazBean other = (BazBean) obj;
+		if (misc != other.misc) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Baz [misc=" + misc + "]";
+	}
+	
+	
+}

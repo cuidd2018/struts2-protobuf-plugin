@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
--->
-<Configuration>
-    <Appenders>
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
-        <Logger name="com.junahan.struts2.protobuf" level="debug"/>
-    </Loggers>
-</Configuration>
+package com.junahan.struts2.protobuf;
+
+/**
+ * Wrap exceptions throwed by protobuf serializer.
+ * 
+ * @author Junahan - junahan@outlook.com 2018
+ * @since 1.0.0
+ *
+ */
+public class ProtobufException extends Exception {
+  private static final long serialVersionUID = 3552997915422357178L;
+  
+  public ProtobufException() {
+    super();
+  }
+  
+  public ProtobufException(String message) {
+    super(message);
+  }
+  
+  public ProtobufException(Throwable throwable) {
+    super(throwable);
+  }
+  
+  public ProtobufException(String message, Throwable throwable) {
+    super(message, throwable);
+  }
+}

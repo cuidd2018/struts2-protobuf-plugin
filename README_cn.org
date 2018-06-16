@@ -27,7 +27,7 @@ NOTE: Readme version for Chinesee version (中文版本) .
 To use struts2-protobuf-plugin, add following dependency in your POM file.
 #+BEGIN_SRC xml
   <dependency>
-    <groupId>com.github.struts2</groupId>
+    <groupId>com.junahan.struts2</groupId>
     <artifactId>struts2-protobuf-plugin</artifactId>
     <version>1.0.0</version>
     <scope>compile</scope>

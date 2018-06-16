@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,17 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
--->
-<Configuration>
-    <Appenders>
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
-        <Logger name="com.junahan.struts2.protobuf" level="debug"/>
-    </Loggers>
-</Configuration>
+syntax = "proto2";
+
+package junahan.struts2.protobuf.test;
+
+option java_package="com.junahan.struts2.protobuf.test";
+option java_multiple_files = false;
+option optimize_for = SPEED;
+
+import "junahan/struts2/protobuf/protocol.proto";
+
+enum TestEnum2 {
+    ENUM_VALUE1 = 0;
+    ENUM_VALUE2 = 1;
+}
+
+message TestMessageA {
+    optional int32 int32_field = 1;
+    optional TestEnum2 enum_field = 3;
+    
+    extensions 5000 to max;
+}
+
+extend TestMessageA {
+    optional string string_field = 5000;
+}
