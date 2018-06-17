@@ -1,7 +1,6 @@
 package com.junahan.struts2.protobuf.demo;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import org.apache.commons.logging.Log;
@@ -30,7 +29,7 @@ public class EchoClient {
 	
 	public String doEcho(String message) throws Exception {
 		String echoMessage = "";
-		HttpPost httpPost = new HttpPost("http://localhost:8080/echo");
+		HttpPost httpPost = new HttpPost("http://localhost:8080/struts2-protobuf-plugin-demo-web/echo");
 		DemoRequest demoRequest = DemoRequest.newBuilder().setEchoMessage(message).build();
 		WireRequest.Builder request = WireRequest.newBuilder();
 		request.setPayloadType(DemoRequest.getDescriptor().getFullName());
@@ -43,23 +42,24 @@ public class EchoClient {
 		httpPost.setEntity(requestEntity);
 
 		CloseableHttpResponse response = httpclient.execute(httpPost);
-    LOG.debug(String.format("statusline: %s",response.getStatusLine()));
-    LOG.debug(String.format("entity: %s", EntityUtils.toString(response.getEntity())));
 		try {
 		    StatusLine statusLine = response.getStatusLine();
-        HttpEntity responseEntity = response.getEntity();
-        if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.toString());
-        }
+        if (statusLine.getStatusCode() != HttpStatus.SC_OK) 
+          throw new HttpResponseException(statusLine.getStatusCode(), statusLine.toString());
+
+		    HttpEntity responseEntity = response.getEntity();
         // check the entity
         if (responseEntity == null) {
             throw new ClientProtocolException("Response contains no content");
         }
+        
+        // check the entity type
         Header contentType = responseEntity.getContentType();
-        if (!contentType.getValue().equals(MessageConsts.MIME_PROTOBUF)) {
-          throw new ClientProtocolException(String.format("Invalid contentType %s, expected %s.",
-              contentType.getValue(), MessageConsts.MIME_PROTOBUF));
+        if (!contentType.getValue().contains(MessageConsts.MIME_PROTOBUF)) {
+        	throw new ClientProtocolException(String.format("Invalid content type - {}, expected {}.",
+        			contentType.getValue().toString(), MessageConsts.MIME_PROTOBUF));
         }
+        
         byte[] payload = EntityUtils.toByteArray(responseEntity);
         WireResponse wr = WireResponse.parseFrom(payload);
         DemoRequest dr = DemoRequest.parseFrom(wr.getPayload());

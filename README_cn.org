@@ -1,5 +1,5 @@
 # -*- mode: org; coding: utf-8; -*-
-#+TITLE:              RESDME
+#+TITLE:              README
 #+AUTHOR:         Junahan
 #+EMAIL:             junahan@outlook.com
 #+DATE:              2018-06-11
@@ -15,12 +15,10 @@ This project is design for scenes as:
 - Use protobuf as exchange model to avoid serialize/deserialize persistent model (for example, JPA model) directly.
 - Byside the RPC, you want to use protobuf over HTTP and are using Struts2 as web framework.
 
-NOTE: Readme version for Chinesee version (中文版本) .
-
 * Features
 - Populate request protobuf message fields to action object properties automatically.
 - Support protobuf message as result - including the succeed response, validation error (field/action error) or exceptions, all of them can be serialized as protobuf message.
-- Tools to support to populate java model object to protobuf message.
+- Utils support to populate java model object to protobuf message.
 
 * TODO Quick Start
 ** Add Dependency in Maven POM 
