@@ -25,6 +25,7 @@ hs_err_pid*
 # ignore the eclipse project files.
 target
 bin
+logs
 .gradle
 .classpath
 .project

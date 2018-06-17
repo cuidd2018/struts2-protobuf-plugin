@@ -75,15 +75,10 @@ public final class ProtobufUtil {
   public static void writeResponse(HttpServletResponse response, WireResponse responseMessage, boolean allowCaching) throws IOException {
     if (responseMessage == null) throw new IllegalArgumentException("The responseMessage argument is required.");
     byte[] content = responseMessage.toByteArray();
-    // set response status
-    if (responseMessage.getStatus().equals(EStatus.SUCCEED)) {
-    	response.setStatus(HttpServletResponse.SC_OK);
-    } else {
-    	response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
-    }
+    if (response.getStatus() <= 0) response.setStatus(HttpServletResponse.SC_OK);
     response.setContentType(MessageConsts.MIME_PROTOBUF);
     response.setContentLength(content.length);
-    //response.setCharacterEncoding(MessageConsts.UTF_8);
+    response.setCharacterEncoding(MessageConsts.UTF_8);
     // Set the cache control headers if neccessary
     if (!allowCaching) {
       response.addHeader("Pragma", "no-cache");
@@ -112,7 +107,6 @@ public final class ProtobufUtil {
     
     // check exception.
     if (exception != null) {
-    	response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
     	if (exception.getMessage() != null) 
     		emb.setMessage(exception.getMessage());
     }

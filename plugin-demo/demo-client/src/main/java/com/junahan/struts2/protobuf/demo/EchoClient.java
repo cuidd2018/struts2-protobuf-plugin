@@ -1,5 +1,7 @@
 package com.junahan.struts2.protobuf.demo;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import org.apache.commons.logging.Log;
@@ -13,6 +15,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -28,23 +31,24 @@ public class EchoClient {
 	public String doEcho(String message) throws Exception {
 		String echoMessage = "";
 		HttpPost httpPost = new HttpPost("http://localhost:8080/echo");
-		httpPost.addHeader("content-type", MessageConsts.MIME_PROTOBUF);
-		//httpPost.addHeader("content-type", "text/plain; charset=UTF-8");
 		DemoRequest demoRequest = DemoRequest.newBuilder().setEchoMessage(message).build();
 		WireRequest.Builder request = WireRequest.newBuilder();
 		request.setPayloadType(DemoRequest.getDescriptor().getFullName());
 		request.setPayload(demoRequest.toByteString());
 		
-		ByteArrayEntity requestEntity = new ByteArrayEntity(request.build().toByteArray());
+		ByteArrayEntity requestEntity = new ByteArrayEntity(request.build().toByteArray(), 
+				ContentType.create(MessageConsts.MIME_PROTOBUF));
+		httpPost.addHeader(requestEntity.getContentType());
+		httpPost.addHeader(requestEntity.getContentEncoding());
 		httpPost.setEntity(requestEntity);
+
 		CloseableHttpResponse response = httpclient.execute(httpPost);
     LOG.debug(String.format("statusline: %s",response.getStatusLine()));
     LOG.debug(String.format("entity: %s", EntityUtils.toString(response.getEntity())));
 		try {
 		    StatusLine statusLine = response.getStatusLine();
         HttpEntity responseEntity = response.getEntity();
-        if (statusLine.getStatusCode() != HttpStatus.SC_OK
-        		&& statusLine.getStatusCode() != HttpStatus.SC_EXPECTATION_FAILED) {
+        if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
             throw new HttpResponseException(statusLine.getStatusCode(), statusLine.toString());
         }
         // check the entity
@@ -85,6 +89,11 @@ public class EchoClient {
 				System.out.println(e.getMessage());
 				LOG.debug(e);
 			}
+		}
+		try {
+			httpclient.close();
+		} catch (IOException e) {
+			// do nothing
 		}
 	}
 }

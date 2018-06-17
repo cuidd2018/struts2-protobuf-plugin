@@ -69,16 +69,6 @@ public class ProtobufValidationInterceptor extends MethodFilterInterceptor {
   private static final long serialVersionUID = 4375382534489980975L;
   private static final Logger LOG = LogManager.getLogger(ProtobufValidationInterceptor.class);
   private static final String VALIDATE_ONLY_PARAM = "struts.validateOnly";
-
-  private int validationFailedStatus = -1;
-
-  /**
-   * HTTP status that will be set in the response if validation fails
-   * @param validationFailedStatus
-   */
-  public void setValidationFailedStatus(int validationFailedStatus) {
-    this.validationFailedStatus = validationFailedStatus;
-  }
   
   /* (non-Javadoc)
    * @see com.opensymphony.xwork2.interceptor.MethodFilterInterceptor#doIntercept(com.opensymphony.xwork2.ActionInvocation)
@@ -120,11 +110,6 @@ public class ProtobufValidationInterceptor extends MethodFilterInterceptor {
     ResponseError.Builder errorBuilder = ResponseError.newBuilder();
     if (validationAware.hasErrors()) {
       builder.setStatus(EStatus.FAILED);
-      // set the response status
-      if (validationFailedStatus >= 0) {
-        response.setStatus(validationFailedStatus);
-      }
-      
       if (validationAware.hasActionErrors()) {
         Collection<String> aes = validationAware.getActionErrors();
         errorBuilder.addAllActionErrors(aes);

@@ -29,7 +29,7 @@ To use struts2-protobuf-plugin, add following dependency in your POM file.
   <dependency>
     <groupId>com.junahan</groupId>
     <artifactId>struts2-protobuf-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <scope>compile</scope>
   </dependency>
 #+END_SRC

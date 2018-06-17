@@ -71,7 +71,7 @@ public class ProtobufResultTest extends StrutsJUnit4TestCase<ProtobufResultTest>
 		
     // compare
     assertNotNull(result);
-    assertTrue(response.getStatus() != HttpServletResponse.SC_OK);
+    assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
     assertEquals(MessageConsts.MIME_PROTOBUF, response.getContentType());
     WireResponse wr = WireResponse.parseFrom(response.getContentAsByteArray());
     assertTrue(wr.hasError());
@@ -84,7 +84,7 @@ public class ProtobufResultTest extends StrutsJUnit4TestCase<ProtobufResultTest>
 		
     // compare
     assertNotNull(result);
-    assertTrue(response.getStatus() != HttpServletResponse.SC_OK);
+    assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
     assertEquals(MessageConsts.MIME_PROTOBUF, response.getContentType());
     WireResponse wr = WireResponse.parseFrom(response.getContentAsByteArray());
     assertTrue(wr.hasError());
@@ -99,7 +99,7 @@ public class ProtobufResultTest extends StrutsJUnit4TestCase<ProtobufResultTest>
 		
     // compare
     assertNotNull(result);
-    assertTrue(response.getStatus() != HttpServletResponse.SC_OK);
+    assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
     assertEquals(MessageConsts.MIME_PROTOBUF, response.getContentType());
     WireResponse wr = WireResponse.parseFrom(response.getContentAsByteArray());
     assertTrue(wr.hasError());
