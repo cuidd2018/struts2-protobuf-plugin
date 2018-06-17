@@ -27,7 +27,7 @@ NOTE: Readme version for Chinesee version (中文版本) .
 To use struts2-protobuf-plugin, add following dependency in your POM file.
 #+BEGIN_SRC xml
   <dependency>
-    <groupId>com.junahan.struts2</groupId>
+    <groupId>com.junahan</groupId>
     <artifactId>struts2-protobuf-plugin</artifactId>
     <version>1.0.0</version>
     <scope>compile</scope>
@@ -59,18 +59,6 @@ $ mvn install
 /In this case, it will install a SNAPSHOT version in your local maven repository./
 
 * Known Issue
-- doesn't support to populate protobuf message map type field to Action object property.  In this case, please use a Key/Value message to replace it. For example, 
-#+BEGIN_SRC 
-message MapEntry {
-    optional string key = 1;
-    optional string value = 2;
-}
-
-message Foo {
-    repeated MapEntry map = 1;
-}
-
-#+END_SRC
 
 * Todo List
 - Support to populate request message map type field to Action object property. 

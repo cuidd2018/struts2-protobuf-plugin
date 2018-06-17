@@ -89,8 +89,9 @@ public final class ProtobufUtil {
       response.addHeader("Pragma", "no-cache");
       response.addHeader("Cache-Control", "no-cache");
     }
-    LOG.debug("Protobuf message result metadata - [type=[" + MessageConsts.MIME_PROTOBUF + "] length=[" + content.length +
-          "] charset=[" + MessageConsts.UTF_8 + "]");
+    LOG.debug("Protobuf message result metadata - [content-type=[" + response.getContentType() + 
+    		"] length=[" + content.length +
+    		"] charset=[" + response.getCharacterEncoding() + "]");
     ServletOutputStream os = null;
     try {
       os = response.getOutputStream();
