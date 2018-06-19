@@ -11,9 +11,9 @@
 
 * 简介
 该项目为如下应用场景设计：
-- 使用 protobuf 作为内部系统通讯协议；
-- 使用 protobuf 作为交换模型以避免直接暴露持久层模型（例如 JPA 模型）或者用于替代 POJO 交换模型；
-- 除了使用 RPC 以外，希望把 protobuf 模型用于 HTTP且正在使用 Struts2 Web 框架。
+- 使用 [[https://developers.google.com/protocol-buffers/][Protobuf]] 作为内部系统通讯协议；
+- 使用 Protobuf 作为交换模型以避免直接暴露持久层模型（例如 JPA 模型）或者用于替代 POJO 交换模型；
+- 除了使用 RPC 以外，希望把 protobuf 模型用于 HTTP且正在使用 [[http://struts.apache.org][Struts2 Web 框架]]。
 
 * 支持特性
 - 提供工具类库，支持将 protobuf 消息域的值转换为类型兼容的 Java 对象属性值，反之依然；
@@ -47,20 +47,13 @@
 - demo-web 用于 Echo Service Web 端代码；
 - demo-client 是一个 Echo 命令行客户端，以发送任意 Echo 命令，使用 Apache HttpClient 实现；
 
-** Define Demo Model
-*** 添加依赖至 Maven POM
-为了使用 struts2-protobuf-plugin 有关 protobuf 消息定义，添加如下依赖到 Maven POM：
-#+BEGIN_SRC xml
-  <dependency>
-    <groupId>com.github.junahan</groupId>
-    <artifactId>struts2-protobuf-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <scope>compile</scope>
-  </dependency>
-#+END_SRC
+** 定义 Demo Model
+Demo Model 包含用于系统客户端和服务端进行通讯的 Protobum 消息，通过 protc 生成相应的代码。Demo Model 会在客户端和服务端共享。
 
-*** Protobuf 消息定义
-这里建议针对项目定义一个如 xxxRequest 和 xxxResponse 的 protobuf 消息定义作为顶层的消息来容纳和整合系统所定义的消息。
+这里建议针对项目定义一个如 xxxRequest 和 xxxResponse 的 protobuf 消息作为顶层的消息来容纳和整合系统所定义的消息。
+
+*** Echo Protobuf 消息定义
+以下代码片段是我们定义的 DemoRequest 和 DemoResponse 消息，在该示例中，他们仅仅包含 echo_message 域用于传递 echo  消息。
 #+BEGIN_SRC  protobuf
 syntax = "proto2";
 
@@ -87,33 +80,155 @@ message DemoResponse {
 }
 #+END_SRC
 
+*** POM
+我们通过在 POM 中加入项目对 protobuf-java 的依赖以及使用 protobuf-maven-plugin 来根据我们的 protobuf  消息定义生成相应的 Java 代码。
+#+BEGIN_SRC  xml
+	<dependencies>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>${protobuf.version}</version>
+		</dependency>
+    </dependencies>
 
-** Define Struts2 Action
-
-** Define Struts Configure file
-
-** Run the Example
-
-* TODO FAQ 
-
-* Build from Source
-- Clone the project from Github
-#+BEGIN_SRC sh
-git clone https://github.com/junahan/struts2-protobuf-plugin.git
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>${maven.protobuf.plugin.version}</version>
+				<configuration>
+					<protocExecutable>/usr/local/bin/protoc</protocExecutable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 #+END_SRC
 
-- Build and Install
-#+BEGIN_SRC sh
-$ cd struts2-protobuf-plugin
-$ mvn install
+** 服务端代码
+服务端代码实现 EchoAction 并配置 struts 使用 Protobuf Plugin。
+
+*** Action 代码
+EchoActio 类实现 ProtobufResponseAware 接口，插件会针对该接口的 Action 执行拦截。EchoAction 类的 execute 方法则根据传入的 echoMessage 信息构造 DemoResponse 消息以返回 echoMessage 消息。
+
+#+BEGIN_SRC java
+  public class EchoAction extends ActionSupport implements ProtobufResponseAware {
+      private static final long serialVersionUID = -2144322110047021579L;
+      private String echoMessage;
+      private DemoResponse responseMessage;
+      
+      @Override
+      public String execute() throws Exception {
+          if (echoMessage == null) echoMessage = " ";
+          DemoResponse.Builder drb = DemoResponse.newBuilder();
+          drb.setEchoMessage(echoMessage);
+          responseMessage = drb.build();
+          return Action.SUCCESS;
+      }
+      // ...
+  }
 #+END_SRC
 
-/In this case, it will install a SNAPSHOT version in your local maven repository./
+*** 添加依赖至 Maven POM
+EchoAction 依赖 struts2-protobuf-plugin 和 此前定义的 EchoService 消息模型，可以添加如下依赖到 POM：
+#+BEGIN_SRC xml
+      <dependency>
+            <groupId>com.github.junahan</groupId>
+            <artifactId>struts2-protobuf-plugin-demo-model</artifactId>
+            <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+			<groupId>com.github.junahan</groupId>
+			<artifactId>struts2-protobuf-plugin</artifactId>
+			<version>${project.version}</version>
+      </dependency>
+#+END_SRC
+
+*** 配置 Struts2 Web
+配置 struts.xml 以配置 Protobuf plugin 调用栈和 EchoAction 映射：
+- 这里注意要配置 =protobuf.customFileDescriptorClasses= 变量，指定Echo Demo 模型中定义的 Protobuf 消息类全名，Protobuf Plugin 会使用该类信息。
+- 注意将 EchoAction Result 配置为 type="protobuf" 以返回 Protobuf  消息。
+
+#+BEGIN_SRC xml
+<struts>
+    <package name="default" namespace="/" extends="protobuf-default">
+		<interceptors>
+		  <interceptor-stack name="myDefaultStack">
+		      <interceptor-ref name="protobufDefaultStack">
+		            <param name="protobuf.customFileDescriptorClasses">
+		              com.github.junahan.struts2.demo.protocol.DemoProtocol
+		            </param>
+		      </interceptor-ref>
+		  </interceptor-stack>
+		</interceptors>
+        
+        <default-interceptor-ref name="myDefaultStack"/>
+
+        <action name="echo" class="com.github.junahan.struts2.demo.actions.EchoAction">
+            <result type="protobuf"/>
+        </action>
+    </package>
+</struts>
+#+END_SRC
+
+** 客户端代码
+客户端从命令行终端接收用户的输入，将该消息打包为 Protobuf 消息，消息被通过 HTTP 通道送至服务端并从服务端返回相应的 Echo 消息。
+#+BEGIN_SRC java
+  public static void main(String[] args) {
+      EchoClient client = new EchoClient();
+      @SuppressWarnings("resource")
+      Scanner scanner = new Scanner(System.in);
+      System.out.println("> Try any message and input '!q' to quit.");
+      while(true) {
+          System.out.print("> ");
+          String message = scanner.nextLine();
+          if (message.trim().equals("!q")) {
+              break;
+          }
+          try {
+              String echoMessage = client.doEcho(message);
+              System.out.println(echoMessage);
+          } catch (Exception e) {
+              System.out.println(e.getMessage());
+              LOG.debug(e);
+          }
+      }
+      // ...
+  }
+#+END_SRC
+
+** 运行 Echo Demo
+- 构建 Echo Demo - 进入 plugin-demo 目录，运行 =mvn clean package= 命令构建系统；
+- 运行 Web Server - 进入 demo-web 目录，运行 =mvn:jetty:run= 命令以启动 Jetty Web  Server 和 Echo Web；
+- 运行客户端 - 进入 demo-client 目录，运行 =java -jar target/struts2-protobuf-plugin-demo-client-1.0.0-SNAPSHOT.jar= 命令以运行客户端；
+- 在客户端命令行终端输入任意消息 如 Hello，终端回显用户输入的信息。
+#+BEGIN_SRC sh
+> Try any message and input '!q' to quit.
+> Hello
+Hello
+> 
+#+END_SRC
+
+* TODO 开发者手册
 
 * Known Issue
+- N/A
 
 * Todo List
 - Support to populate request message map type field to Action object property. 
 
-* References
+* 参考文献
+1. Protobuf Home, https://developers.google.com/protocol-buffers/.
+3. Struts2 Home, http://struts.apache.org.
+5. HttpClient Home, http://hc.apache.org/httpcomponents-client-ga/.
+7. Struts2 Protobuf Plugin Project, https://github.com/junahan/struts2-protobuf-plugin.
 
