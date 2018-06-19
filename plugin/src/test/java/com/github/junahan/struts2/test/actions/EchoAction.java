@@ -16,26 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.test.actions;
 
-package junahan.struts2.protobuf.demo;
+import com.github.junahan.struts2.test.protocol.TestResponse;
+import com.opensymphony.xwork2.Action;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+public class EchoAction extends TestAction {
+	private static final long serialVersionUID = -2144322110047021579L;
+	private String echoMessage;
+	
+	@Override
+	public String execute() throws Exception {
+		if (echoMessage == null) echoMessage = " ";
+		TestResponse.Builder trb = TestResponse.newBuilder();
+		trb.setEchoMessage(echoMessage);
+		responseMessage = trb.build();
+		return Action.SUCCESS;
+	}
 
-//import "junahan/struts2/protobuf/protocol.proto";
+	public String getEchoMessage() {
+		return echoMessage;
+	}
 
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
+	public void setEchoMessage(String echoMessage) {
+		this.echoMessage = echoMessage;
+	}
 
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
 }

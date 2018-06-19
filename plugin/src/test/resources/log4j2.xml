@@ -29,6 +29,6 @@
         <Root level="info">
             <AppenderRef ref="STDOUT"/>
         </Root>
-        <Logger name="com.junahan.struts2.protobuf" level="debug"/>
+        <Logger name="com.github.junahan.struts2" level="debug"/>
     </Loggers>
 </Configuration>

@@ -16,26 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.test.actions;
 
-package junahan.struts2.protobuf.demo;
+import com.github.junahan.struts2.ProtobufException;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+public class ActionTestWithException extends TestAction {
+	private static final long serialVersionUID = 4928915742397682769L;
 
-//import "junahan/struts2/protobuf/protocol.proto";
+	@Override
+	public String execute() throws Exception {
+		throw new ProtobufException("Just an excption");
+	}
 
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
-
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
 }

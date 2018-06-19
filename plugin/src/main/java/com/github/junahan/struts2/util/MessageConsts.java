@@ -16,26 +16,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.util;
 
-package junahan.struts2.protobuf.demo;
+/**
+ * TODO - add document
+ * 
+ * @author Junahan - junahan@outlook.com 2018
+ * @since 1.0.0
+ */
+public interface MessageConsts {
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+  /**
+   * code for "succeed". 
+   */
+  String SUCCEED = "succeed";
 
-//import "junahan/struts2/protobuf/protocol.proto";
+  /**
+   * code for "error".
+   */
+  String ERROR = "error";
+  
+  /**
+   * The code for unsupported media type message.
+   */
+  String UNSUPPORTED_MEDIA_TYPE = "unsupported.media.type";
+  
+  /**
+   * Mime type of Protobuf message
+   */
+  String MIME_PROTOBUF = "application/x-protobuf";
+  
+  /**
+   * Mime type of JSON
+   */
+  String MIME_JSON = "application/json";
+  
+  /**
+   * Charset of UTF_8.
+   */
+  String UTF_8 = "UTF-8";
 
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
-
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
 }

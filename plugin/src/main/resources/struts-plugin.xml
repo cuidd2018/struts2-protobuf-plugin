@@ -27,13 +27,13 @@
     <package name="protobuf-default" extends="struts-default">
 
         <result-types>
-            <result-type name="protobuf" class="com.junahan.struts2.protobuf.ProtobufResult"/>
+            <result-type name="protobuf" class="com.github.junahan.struts2.ProtobufResult"/>
         </result-types>
 
         <interceptors>
-            <interceptor name="protobufException" class="com.junahan.struts2.protobuf.ProtobufExceptionInterceptor"/>
-            <interceptor name="protobuf" class="com.junahan.struts2.protobuf.ProtobufInterceptor"/>
-            <interceptor name="protobufValidation" class="com.junahan.struts2.protobuf.ProtobufValidationInterceptor"/>
+            <interceptor name="protobufException" class="com.github.junahan.struts2.ProtobufExceptionInterceptor"/>
+            <interceptor name="protobuf" class="com.github.junahan.struts2.ProtobufInterceptor"/>
+            <interceptor name="protobufValidation" class="com.github.junahan.struts2.ProtobufValidationInterceptor"/>
             
             <!-- protobuf validation stack -->
             <interceptor-stack name="protobufValidationStack">
@@ -72,7 +72,7 @@
                 <interceptor-ref name="params" />
                 <interceptor-ref name="conversionError" />
                 <interceptor-ref name="protobuf">
-                  <param name="fileDescriptorClasses">com.junahan.struts2.protobuf.protocol.Protocol</param>
+                  <param name="fileDescriptorClasses">com.github.junahan.struts2.protocol.Protocol</param>
                   <param name="customFileDescriptorClasses"></param>
                 </interceptor-ref>
                 <interceptor-ref name="protobufValidationStack" />

@@ -29,8 +29,8 @@
 		  <interceptor-stack name="myDefaultStack">
 		      <interceptor-ref name="protobufDefaultStack">
 		            <param name="protobuf.customFileDescriptorClasses">
-		              com.junahan.struts2.protobuf.test.ProtocolTest,
-		              com.junahan.struts2.protobuf.test.ProtocolTest2
+		              com.github.junahan.struts2.test.protocol.ProtocolTest,
+		              com.github.junahan.struts2.test.protocol.ProtocolTest2
 		            </param>
 		      </interceptor-ref>
 		  </interceptor-stack>
@@ -38,32 +38,32 @@
         
         <default-interceptor-ref name="myDefaultStack"/>
         
-        <action name="action1" class="com.junahan.struts2.protobuf.test.actions.Action1">
+        <action name="action1" class="com.github.junahan.struts2.test.actions.Action1">
             <result type="protobuf"/> 
         </action>
-        <action name="action2" class="com.junahan.struts2.protobuf.test.actions.Action2">
+        <action name="action2" class="com.github.junahan.struts2.test.actions.Action2">
             <result type="protobuf"/> 
         </action>
-        <action name="action3" class="com.junahan.struts2.protobuf.test.actions.Action3">
+        <action name="action3" class="com.github.junahan.struts2.test.actions.Action3">
             <result type="protobuf"/> 
         </action>
-        <action name="action4" class="com.junahan.struts2.protobuf.test.actions.Action4">
+        <action name="action4" class="com.github.junahan.struts2.test.actions.Action4">
             <result type="protobuf"/> 
         </action>
         
-        <action name="fieldErrorTest" class="com.junahan.struts2.protobuf.test.actions.ActionTestWithFieldError">
+        <action name="fieldErrorTest" class="com.github.junahan.struts2.test.actions.ActionTestWithFieldError">
             <result type="protobuf"/>
         </action>
         
-        <action name="actionErrorTest" class="com.junahan.struts2.protobuf.test.actions.ActionTestWithActionError">
+        <action name="actionErrorTest" class="com.github.junahan.struts2.test.actions.ActionTestWithActionError">
             <result type="protobuf"/>
         </action>
         
-        <action name="actionWithExceptionTest" class="com.junahan.struts2.protobuf.test.actions.ActionTestWithException">
+        <action name="actionWithExceptionTest" class="com.github.junahan.struts2.test.actions.ActionTestWithException">
             <result type="protobuf"/>
         </action>        
         
-        <action name="echo" class="com.junahan.struts2.protobuf.test.actions.EchoAction">
+        <action name="echo" class="com.github.junahan.struts2.test.actions.EchoAction">
             <result type="protobuf"/>
         </action>
     </package>

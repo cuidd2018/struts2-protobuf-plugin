@@ -16,26 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.test.bean;
 
-package junahan.struts2.protobuf.demo;
+public class BazBean {
+	private int misc;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+	public int getMisc() {
+		return misc;
+	}
 
-//import "junahan/struts2/protobuf/protocol.proto";
+	public void setMisc(int misc) {
+		this.misc = misc;
+	}
 
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + misc;
+		return result;
+	}
 
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof BazBean)) {
+			return false;
+		}
+		BazBean other = (BazBean) obj;
+		if (misc != other.misc) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Baz [misc=" + misc + "]";
+	}
+	
+	
 }

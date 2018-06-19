@@ -9,30 +9,84 @@
 #+INFOJS_OPT:   view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
 #+LICENSE:         CC BY 4.0
 
-* Abstract
-This project is design for scenes as:
-- Use protobuf for internel communication protocol between different system.
-- Use protobuf as exchange model to avoid serialize/deserialize persistent model (for example, JPA model) directly.
-- Byside the RPC, you want to use protobuf over HTTP and are using Struts2 as web framework.
+* 简介
+该项目为如下应用场景设计：
+- 使用 protobuf 作为内部系统通讯协议；
+- 使用 protobuf 作为交换模型以避免直接暴露持久层模型（例如 JPA 模型）或者用于替代 POJO 交换模型；
+- 除了使用 RPC 以外，希望把 protobuf 模型用于 HTTP且正在使用 Struts2 Web 框架。
 
-* Features
-- Populate request protobuf message fields to action object properties automatically.
-- Support protobuf message as result - including the succeed response, validation error (field/action error) or exceptions, all of them can be serialized as protobuf message.
-- Utils support to populate java model object to protobuf message.
+* 支持特性
+- 提供工具类库，支持将 protobuf 消息域的值转换为类型兼容的 Java 对象属性值，反之依然；
+- 将 protobuf 消息域的值自动转换为对应的 Action 对象属性值；
+- 支持将 protobuf 消息作为 Struts2 Result - 包括成功的 Response，验证错误（包括字段/动作错误）或者异常，均可以通过 protobuf 消息结果返回。
 
-* TODO Quick Start
-** Add Dependency in Maven POM 
-To use struts2-protobuf-plugin, add following dependency in your POM file.
+* TODO 快速启动
+这里以一个简单的 Echo Service 作为例子，展示如何在你的项目中使用 struts2-protobuf-plugin 。访问 [[https://github.com/junahan/struts2-protobuf-plugin/tree/master/plugin-demo][struts2-protobuf-plugin-dem]]o 查看更多示例源代码信息。
+
+** 创建 Echo Service 项目结构
+#+BEGIN_EXAMPLE
+.
+├── demo-client
+│   └── src
+│       └── main
+│           ├── java
+│           └── resources
+├── demo-model
+│   └── src
+│       └── main
+│           ├── java
+│           └── proto
+└── demo-web
+    └── src
+        └── main
+            ├── java
+            ├── resources
+            └── webapp
+#+END_EXAMPLE
+- demo-model 用于存放项目 protobuf 消息定义，作为模型会在客户端和服务端共享；
+- demo-web 用于 Echo Service Web 端代码；
+- demo-client 是一个 Echo 命令行客户端，以发送任意 Echo 命令，使用 Apache HttpClient 实现；
+
+** Define Demo Model
+*** 添加依赖至 Maven POM
+为了使用 struts2-protobuf-plugin 有关 protobuf 消息定义，添加如下依赖到 Maven POM：
 #+BEGIN_SRC xml
   <dependency>
-    <groupId>com.junahan</groupId>
+    <groupId>com.github.junahan</groupId>
     <artifactId>struts2-protobuf-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <scope>compile</scope>
   </dependency>
 #+END_SRC
 
-** Define Protobuf Message
+*** Protobuf 消息定义
+这里建议针对项目定义一个如 xxxRequest 和 xxxResponse 的 protobuf 消息定义作为顶层的消息来容纳和整合系统所定义的消息。
+#+BEGIN_SRC  protobuf
+syntax = "proto2";
+
+package junahan.struts2.protobuf.demo;
+
+option java_package="com.github.junahan.struts2.protobuf.demo";
+option java_multiple_files = true;
+option optimize_for = SPEED;
+
+//import "junahan/struts2/protobuf/protocol.proto";
+
+message DemoRequest {
+    optional string echo_message = 1;
+    
+    // for extension
+    extensions 5000 to max;
+}
+
+message DemoResponse {
+    optional string echo_message = 1;
+    
+    // for extension
+    extensions 5000 to max;
+}
+#+END_SRC
+
 
 ** Define Struts2 Action
 

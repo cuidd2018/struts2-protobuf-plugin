@@ -29,7 +29,7 @@
 		  <interceptor-stack name="myDefaultStack">
 		      <interceptor-ref name="protobufDefaultStack">
 		            <param name="protobuf.customFileDescriptorClasses">
-		              com.junahan.struts2.protobuf.demo.DemoProtocol
+		              com.github.junahan.struts2.demo.protocol.DemoProtocol
 		            </param>
 		      </interceptor-ref>
 		  </interceptor-stack>
@@ -37,7 +37,7 @@
         
         <default-interceptor-ref name="myDefaultStack"/>
 
-        <action name="echo" class="com.junahan.struts2.protobuf.demo.actions.EchoAction">
+        <action name="echo" class="com.github.junahan.struts2.demo.actions.EchoAction">
             <result type="protobuf"/>
         </action>
     </package>

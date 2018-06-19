@@ -18,9 +18,9 @@
  */
 syntax = "proto2";
 
-package junahan.struts2.protobuf.test;
+package junahan.struts2.protobuf;
 
-option java_package="com.junahan.struts2.protobuf.test";
+option java_package="com.github.junahan.struts2.test.protocol";
 option java_multiple_files = true;
 option optimize_for = SPEED;
 

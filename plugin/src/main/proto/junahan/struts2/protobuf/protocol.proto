@@ -20,7 +20,7 @@ syntax = "proto2";
 
 package junahan.struts2.protobuf;
 
-option java_package="com.junahan.struts2.protobuf.protocol";
+option java_package="com.github.junahan.struts2.protocol";
 option java_multiple_files = true;
 option optimize_for = SPEED;
 

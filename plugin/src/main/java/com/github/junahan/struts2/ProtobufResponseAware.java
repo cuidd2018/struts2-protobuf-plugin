@@ -16,26 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2;
 
-package junahan.struts2.protobuf.demo;
+import com.google.protobuf.Message;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
-
-//import "junahan/struts2/protobuf/protocol.proto";
-
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
-
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
+/**
+ * TODO - add document
+ * 
+ * @author Junahan - junahan@outlook.com 2018
+ * @since 1.0.0
+ */
+public interface ProtobufResponseAware {
+  
+  /**
+   * Getter method to return the response message.
+   * 
+   * @return response message.
+   */
+  public Message getResponseMessage();
+  
 }

@@ -16,26 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.test.actions;
 
-package junahan.struts2.protobuf.demo;
+import com.github.junahan.struts2.ProtobufResponseAware;
+import com.google.protobuf.Message;
+import com.opensymphony.xwork2.ActionSupport;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+public abstract class TestAction extends ActionSupport implements ProtobufResponseAware {
+	private static final long serialVersionUID = 8299739936655145641L;
+	protected Message responseMessage;
+	
+	@Override
+	public Message getResponseMessage() {
+		return responseMessage;
+	}
 
-//import "junahan/struts2/protobuf/protocol.proto";
-
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
-
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
 }

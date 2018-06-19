@@ -16,26 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.test.actions;
 
-package junahan.struts2.protobuf.demo;
+import java.util.UUID;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.interceptor.ValidationAware;
 
-//import "junahan/struts2/protobuf/protocol.proto";
+public class ActionTestWithActionError extends TestAction implements ValidationAware {
+	private static final long serialVersionUID = -4151436537246936316L;
 
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
+	@Override
+	public String execute() throws Exception {
+		if (hasErrors()) return Action.ERROR;
+		return Action.SUCCESS;
+	}
 
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
+	@Override
+	public void validate() {
+		addActionError(UUID.randomUUID().toString());
+	}
+	
 }

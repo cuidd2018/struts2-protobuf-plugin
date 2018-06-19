@@ -16,26 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2.test;
 
-package junahan.struts2.protobuf.demo;
+import java.util.Random;
 
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
+import org.junit.After;
+import org.junit.Before;
 
-//import "junahan/struts2/protobuf/protocol.proto";
+public class BasicTestCase {
+	protected Random random;
+	
+	@Before
+	public void initial() {
+		random = new Random();
+	}
+	
+	@After
+	public void destroy() {
+		
+	}
 
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
-
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
 }

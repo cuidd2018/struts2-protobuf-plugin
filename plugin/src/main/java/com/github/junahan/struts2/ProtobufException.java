@@ -16,26 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-syntax = "proto2";
+package com.github.junahan.struts2;
 
-package junahan.struts2.protobuf.demo;
-
-option java_package="com.github.junahan.struts2.demo.protocol";
-option java_multiple_files = true;
-option optimize_for = SPEED;
-
-//import "junahan/struts2/protobuf/protocol.proto";
-
-message DemoRequest {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
-}
-
-message DemoResponse {
-    optional string echo_message = 1;
-    
-    // for extension
-    extensions 5000 to max;
+/**
+ * Wrap exceptions throwed by protobuf serializer.
+ * 
+ * @author Junahan - junahan@outlook.com 2018
+ * @since 1.0.0
+ *
+ */
+public class ProtobufException extends Exception {
+  private static final long serialVersionUID = 3552997915422357178L;
+  
+  public ProtobufException() {
+    super();
+  }
+  
+  public ProtobufException(String message) {
+    super(message);
+  }
+  
+  public ProtobufException(Throwable throwable) {
+    super(throwable);
+  }
+  
+  public ProtobufException(String message, Throwable throwable) {
+    super(message, throwable);
+  }
 }

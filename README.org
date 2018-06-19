@@ -12,7 +12,7 @@
 * Abstract
 This project is designed for scenes as:
 - Use protobuf as internel communication protocol.
-- Use protobuf as exchange model to avoid serialize/deserialize persistent model (for example, JPA model) directly.
+- Use protobuf as exchange model to avoid to export serialize/deserialize persistent model (for example, JPA model) directly or used to replace the POJO mode.
 - Byside the RPC, we want to use protobuf over HTTP and are using Struts2 as web framework.
 
 NOTE: Readme version for [[file:README_cn.org][Chinesee version (中文版本)]] .
@@ -32,7 +32,7 @@ The plugin-demo project implement a sample echo service as an HelloWorld example
 To use struts2-protobuf-plugin, add following dependency in your POM file.
 #+BEGIN_SRC xml
   <dependency>
-    <groupId>com.junahan</groupId>
+    <groupId>com.github.junahan</groupId>
     <artifactId>struts2-protobuf-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <scope>compile</scope>
