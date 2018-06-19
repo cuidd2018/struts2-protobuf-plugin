@@ -11,43 +11,228 @@
 
 * Abstract
 This project is designed for scenes as:
-- Use protobuf as internel communication protocol.
-- Use protobuf as exchange model to avoid to export serialize/deserialize persistent model (for example, JPA model) directly or used to replace the POJO mode.
-- Byside the RPC, we want to use protobuf over HTTP and are using Struts2 as web framework.
+- Use [[https://developers.google.com/protocol-buffers/][Protobuf]] as internel communication protocol.
+- Use Protobuf as exchange model to avoid to export persistent model (for example, JPA model) directly or used to replace the POJO mode interchange.
+- Byside the RPC, we want to use protobuf over HTTP and are using [[http://struts.apache.org/][Struts2 as web framework]].
 
-NOTE: Readme version for [[file:README_cn.org][Chinesee version (中文版本)]] .
+NOTE: README for [[file:README_cn.org][Chinese version (中文版本)]] .
 
 * Features
-- Populate request protobuf message fields to action object properties automatically.
+- Utils support to populate protobuf message field to POJO object property and vice versa.
+- Populate protobuf message field value to Action object property value automatically.
 - Support protobuf message as result - including the succeed response, validation error (field/action error) or exceptions, all of them can be serialized as protobuf message.
-- Utils support to populate java model object to protobuf message.
 
-* TODO Quick Start
-The plugin-demo project implement a sample echo service as an HelloWorld example. The echo service just response the message what you send. 
+* Quick Start
+The plugin-demo project implements a sample echo service as an example. You can access [[https://github.com/junahan/struts2-protobuf-plugin/tree/master/plugin-demo][struts2-protobuf-plugin-dem]]o to find more information.
 
-** Define Protobuf Message as Interchange Model
+** The Structure of the Echo Service Demo
+#+BEGIN_SRC sh
+.
+├── demo-client
+│   └── src
+│       └── main
+│           ├── java
+│           └── resources
+├── demo-model
+│   └── src
+│       └── main
+│           ├── java
+│           └── proto
+└── demo-web
+    └── src
+        └── main
+            ├── java
+            ├── resources
+            └── webapp
+#+END_SRC
+- demo-model define the protobuf message and will share between client and server.
+- demo-web  implements the echo service on server.
+- demo-client is a echo command line client, it sends any echo message to server using HttpClient. 
 
+** Define Demo Model
+Demo mode defins protobuf message which can be used to generate Java code by using protoc tool. The model will be shared between clieng and server.
 
-** Web Server POM
-To use struts2-protobuf-plugin, add following dependency in your POM file.
-#+BEGIN_SRC xml
-  <dependency>
-    <groupId>com.github.junahan</groupId>
-    <artifactId>struts2-protobuf-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <scope>compile</scope>
-  </dependency>
+We suggest to define protobuf message XxxRequest and XxxResponse as top level message. Which can be used as a container to collect all other messages.
+
+*** Echo Protobuf Message
+The below code snippet defines the DemoRequest and DemoResponse message. In the demo project, both of them only have =echo_message= field which is used to transfer the echo message.
+
+#+BEGIN_SRC protobuf
+syntax = "proto2";
+
+package junahan.struts2.protobuf.demo;
+
+option java_package="com.github.junahan.struts2.protobuf.demo";
+option java_multiple_files = true;
+option optimize_for = SPEED;
+
+//import "junahan/struts2/protobuf/protocol.proto";
+
+message DemoRequest {
+    optional string echo_message = 1;
+    
+    // for extension
+    extensions 5000 to max;
+}
+
+message DemoResponse {
+    optional string echo_message = 1;
+    
+    // for extension
+    extensions 5000 to max;
+}
 #+END_SRC
 
-** Define Struts2 Action
+*** POM
+To make it work, we need to add the =protobuf-java= dependency and use =protobuf-maven-plugin= to generate Java code from protobuf message definition.
+#+BEGIN_SRC xml
+<dependencies>
+  <dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java</artifactId>
+    <version>${protobuf.version}</version>
+  </dependency>
+</dependencies>
 
-** Define Struts Configure file
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.xolstice.maven.plugins</groupId>
+      <artifactId>protobuf-maven-plugin</artifactId>
+      <version>${maven.protobuf.plugin.version}</version>
+      <configuration>
+        <protocExecutable>/usr/local/bin/protoc</protocExecutable>
+      </configuration>
+      <executions>
+        <execution>
+          <goals>
+            <goal>compile</goal>
+            <goal>test-compile</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+#+END_SRC
+
+** Server Code
+The server code implements Echo service by EchoAction class and configure protobuf plugin stack for the Web service.
+
+*** EchoAction Code
+EchoAction implements the ProtobufResponseAware interface. Protobuf plubin interceptor only is performed on the action with this interface. The method =execute= method handle the input echoMessage and build the DemoResponse message to return the echoMessage to client.
+#+BEGIN_SRC java
+public class EchoAction extends ActionSupport implements ProtobufResponseAware {
+    private static final long serialVersionUID = -2144322110047021579L;
+    private String echoMessage;
+    private DemoResponse responseMessage;
+    
+    @Override
+    public String execute() throws Exception {
+        if (echoMessage == null) echoMessage = " ";
+        DemoResponse.Builder drb = DemoResponse.newBuilder();
+        drb.setEchoMessage(echoMessage);
+        responseMessage = drb.build();
+        return Action.SUCCESS;
+    }
+    // ...
+}
+#+END_SRC
+
+*** Add Dependencies to POM
+EchoAction is dependency on struts2-protobuf-plugin and the demo-model:
+#+BEGIN_SRC xml
+<dependency>
+      <groupId>com.github.junahan</groupId>
+      <artifactId>struts2-protobuf-plugin-demo-model</artifactId>
+      <version>${project.version}</version>
+</dependency>
+
+<dependency>
+      <groupId>com.github.junahan</groupId>
+      <artifactId>struts2-protobuf-plugin</artifactId>
+      <version>${project.version}</version>
+</dependency>
+#+END_SRC
+
+*** Configure Struts Web
+In the struts.xml, add the action configuration and the protobuf plubin interceptor stack configuration.
+- User should configure the =protobuf.customFileDescriptorClasses= parameter to tell interceptor to load demo-model protobuf message file descriptor.
+- The result type of =echo= action should be type="protobuf" which tell the system the action result should be a protobuf message.
+#+BEGIN_SRC xml
+<struts>
+    <package name="default" namespace="/" extends="protobuf-default">
+        <interceptors>
+          <interceptor-stack name="myDefaultStack">
+              <interceptor-ref name="protobufDefaultStack">
+                    <param name="protobuf.customFileDescriptorClasses">
+                      com.github.junahan.struts2.demo.protocol.DemoProtocol
+                    </param>
+              </interceptor-ref>
+          </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="myDefaultStack"/>
+
+        <action name="echo" class="com.github.junahan.struts2.demo.actions.EchoAction">
+          <result type="protobuf"/>
+        </action>
+    </package>
+</struts>
+#+END_SRC
+
+** Client Code
+Echo client is a commond line application which accept user's typing from terminor and transfer it as ehco message to server by protobuf message. The echo web service will return the same message as response.
+
+#+BEGIN_SRC java
+public static void main(String[] args) {
+    EchoClient client = new EchoClient();
+    @SuppressWarnings("resource")
+    Scanner scanner = new Scanner(System.in);
+    System.out.println("> Try any message and input '!q' to quit.");
+    while(true) {
+        System.out.print("> ");
+        String message = scanner.nextLine();
+        if (message.trim().equals("!q")) {
+            break;
+        }
+        try {
+            String echoMessage = client.doEcho(message);
+            System.out.println(echoMessage);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            LOG.debug(e);
+        }
+    }
+    // ...
+}
+#+END_SRC
 
 ** Run the Example
+- Run following command to build the demo:
+#+BEGIN_SRC sh
+cd plugin-demo
+mvn clean package
+#+END_SRC
+- Run the web server:
+#+BEGIN_SRC sh
+cd demo-web
+mvn:jetty:run
+#+END_SRC
+- Run the client
+#+BEGIN_SRC sh
+cd demo-client
+target/struts2-protobuf-plugin-demo-client-1.0.0-SNAPSHOT.jar
+#+END_SRC
+- Typeing echo message in terminor
+#+BEGIN_SRC sh
+> Try any message and input '!q' to quit.
+> Hello
+Hello
+> 
+#+END_SRC
 
-* TODO FAQ 
-
-* Develper Guide
+* TODO Develper Guide
 
 ** Build from Source
 - Clone the project from Github
@@ -70,22 +255,13 @@ cd plugin-demo/demo-web
 mvn jetty:run
 #+END_SRC
 
-* Known Issue
-- doesn't support to populate protobuf message map type field to Action object property.  In this case, please use a Key/Value message to replace it. For example, 
-#+BEGIN_SRC 
-message MapEntry {
-    optional string key = 1;
-    optional string value = 2;
-}
-
-message Foo {
-    repeated MapEntry map = 1;
-}
-
-#+END_SRC
-
 * Todo List
 - Support to populate request message map type field to Action object property. 
 
 * References
+1. Protobuf Home, https://developers.google.com/protocol-buffers/.
+3. Struts2 Home, http://struts.apache.org.
+5. HttpClient Home, http://hc.apache.org/httpcomponents-client-ga/.
+7. Struts2 Protobuf Plugin Project, https://github.com/junahan/struts2-protobuf-plugin.
+
 
