@@ -103,7 +103,7 @@ message DemoResponse {
 				<executions>
 					<execution>
 						<goals>
-							<goal>compile</goal>
+                            <goal>compile</goal>
 							<goal>test-compile</goal>
 						</goals>
 					</execution>
@@ -140,17 +140,17 @@ EchoActio 类实现 ProtobufResponseAware 接口，插件会针对该接口的 A
 *** 添加依赖至 Maven POM
 EchoAction 依赖 struts2-protobuf-plugin 和 此前定义的 EchoService 消息模型，可以添加如下依赖到 POM：
 #+BEGIN_SRC xml
-      <dependency>
-            <groupId>com.github.junahan</groupId>
-            <artifactId>struts2-protobuf-plugin-demo-model</artifactId>
-            <version>${project.version}</version>
-      </dependency>
-      
-      <dependency>
-			<groupId>com.github.junahan</groupId>
-			<artifactId>struts2-protobuf-plugin</artifactId>
-			<version>${project.version}</version>
-      </dependency>
+  <dependency>
+        <groupId>com.github.junahan</groupId>
+        <artifactId>struts2-protobuf-plugin-demo-model</artifactId>
+        <version>${project.version}</version>
+  </dependency>
+
+  <dependency>
+        <groupId>com.github.junahan</groupId>
+        <artifactId>struts2-protobuf-plugin</artifactId>
+        <version>${project.version}</version>
+  </dependency>
 #+END_SRC
 
 *** 配置 Struts2 Web
@@ -159,25 +159,25 @@ EchoAction 依赖 struts2-protobuf-plugin 和 此前定义的 EchoService 消息
 - 注意将 EchoAction Result 配置为 type="protobuf" 以返回 Protobuf  消息。
 
 #+BEGIN_SRC xml
-<struts>
-    <package name="default" namespace="/" extends="protobuf-default">
-		<interceptors>
-		  <interceptor-stack name="myDefaultStack">
-		      <interceptor-ref name="protobufDefaultStack">
-		            <param name="protobuf.customFileDescriptorClasses">
-		              com.github.junahan.struts2.demo.protocol.DemoProtocol
-		            </param>
-		      </interceptor-ref>
-		  </interceptor-stack>
-		</interceptors>
-        
-        <default-interceptor-ref name="myDefaultStack"/>
+  <struts>
+      <package name="default" namespace="/" extends="protobuf-default">
+          <interceptors>
+            <interceptor-stack name="myDefaultStack">
+                <interceptor-ref name="protobufDefaultStack">
+                      <param name="protobuf.customFileDescriptorClasses">
+                        com.github.junahan.struts2.demo.protocol.DemoProtocol
+                      </param>
+                </interceptor-ref>
+            </interceptor-stack>
+          </interceptors>
 
-        <action name="echo" class="com.github.junahan.struts2.demo.actions.EchoAction">
+          <default-interceptor-ref name="myDefaultStack"/>
+
+          <action name="echo" class="com.github.junahan.struts2.demo.actions.EchoAction">
             <result type="protobuf"/>
-        </action>
-    </package>
-</struts>
+          </action>
+      </package>
+  </struts>
 #+END_SRC
 
 ** 客户端代码
