@@ -24,7 +24,7 @@
 
 	<groupId>com.github.junahan</groupId>
 	<artifactId>struts2-protobuf-plugin-parent</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>${project.artifactId}</name>
@@ -50,7 +50,7 @@
        <url>https://github.com/junahan/struts2-protobuf-plugin</url>
        <connection>scm:git:https://github.com/junahan/struts2-protobuf-plugin.git</connection>
        <developerConnection>scm:git:git@github.com:junahan/struts2-protobuf-plugin.git</developerConnection>
-      <tag>struts2-protobuf-plugin-parent-1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
     
 	<properties>
