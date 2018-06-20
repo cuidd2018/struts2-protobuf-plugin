@@ -208,10 +208,22 @@ EchoAction 依赖 struts2-protobuf-plugin 和 此前定义的 EchoService 消息
 #+END_SRC
 
 ** 运行 Echo Demo
-- 构建 Echo Demo - 进入 plugin-demo 目录，运行 =mvn clean package= 命令构建系统；
-- 运行 Web Server - 进入 demo-web 目录，运行 =mvn:jetty:run= 命令以启动 Jetty Web  Server 和 Echo Web；
-- 运行客户端 - 进入 demo-client 目录，运行 =java -jar target/struts2-protobuf-plugin-demo-client-1.0.0-SNAPSHOT.jar= 命令以运行客户端；
-- 在客户端命令行终端输入任意消息 如 Hello，终端回显用户输入的信息。
+- 构建 Echo Demo
+#+BEGIN_SRC sh
+cd plugin-demo
+mvn clean package
+#+END_SRC
+- 运行 Web Server
+#+BEGIN_SRC sh
+cd demo-web
+mvn:jetty:run
+#+END_SRC
+- 运行客户端
+#+BEGIN_SRC sh
+cd demo-client
+java -jar target/struts2-protobuf-plugin-demo-client-1.0.0-SNAPSHOT.jar
+#+END_SRC
+- 在客户端终端输入任意消息
 #+BEGIN_SRC sh
 > Try any message and input '!q' to quit.
 > Hello
@@ -221,15 +233,8 @@ Hello
 
 * TODO 开发者手册
 
-* Known Issue
-- N/A
-
-* Todo List
-- Support to populate request message map type field to Action object property. 
-
 * 参考文献
 1. Protobuf Home, https://developers.google.com/protocol-buffers/.
 3. Struts2 Home, http://struts.apache.org.
 5. HttpClient Home, http://hc.apache.org/httpcomponents-client-ga/.
 7. Struts2 Protobuf Plugin Project, https://github.com/junahan/struts2-protobuf-plugin.
-

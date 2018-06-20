@@ -30,3 +30,6 @@ logs
 .classpath
 .project
 .settings
+
+# ignore the release properties created by maven release plugin.
+release.properties
