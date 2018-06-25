@@ -31,5 +31,9 @@ logs
 .project
 .settings
 
+# ignore intellij project files.
+.idea
+*.iml
+
 # ignore the release properties created by maven release plugin.
 release.properties
