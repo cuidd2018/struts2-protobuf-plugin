@@ -121,6 +121,10 @@ message SampleMessage {
   }
 }
 
+message SampleRepeatedMessage {
+    repeated SubMessage sub_messages = 1;
+}
+
 // maps message
 message Baz3 {
     optional string name = 1;
